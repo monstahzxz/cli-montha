@@ -1,10 +1,10 @@
 {
-  "name": "attendence",
+  "name": "attendance",
   "version": "1.0.0",
-  "description": "Attendence Management System",
+  "description": "Attendance Management System",
   "main": "index.js",
   "preferGlobal": true,
-  "bin": "./commands.js",
+  "bin": "./sample.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,8 @@
   "dependencies": {
     "commander": "^5.0.0",
     "inquirer": "^7.1.0",
-    "mongoose": "^5.9.6"
+    "line-reader": "^0.4.0",
+    "mongoose": "^5.9.6",
+    "prompt": "^1.0.0"
   }
 }

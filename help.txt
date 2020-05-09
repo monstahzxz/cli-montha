@@ -1,0 +1,18 @@
+Usage: commands [options] [command]
+
+Attendance Management System
+
+Options:
+  -V, --version        output the version number
+  -h, --help           display help for command
+
+Commands:
+  addUser|au           add a user
+        options:
+                -c | --csv      add from a csv file
+                
+  findUser|fu <name>   find a user
+  updateUser|uu <_id>  update a user
+  removeUser|ru <_id>  remove a user
+  listUser|lu          list all users
+  help [command]       display help for command
