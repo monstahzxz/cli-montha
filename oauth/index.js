@@ -2,12 +2,34 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 
+
+var dataa ={
+  semester : "s8",
+  subject : "data mining",
+  student : {
+    1 : "sara",
+    2 : "son",
+    3 : "vim",
+    4 : "viv",
+    5 : "sabu",
+    6 : "sanj",
+    7 : "testh",
+    8 : "akhi",
+    9 : "mady",
+    10 : "jk",
+    11 : "pand"
+  }
+}
+
 var auth;
 
 function init(oauth)
 {
    auth = oauth;
-   createsheet();
+  //  createsheet("dataa");
+  //  appendData("1VSIHG3RrURj4f9I1Oxam6919fzf95klxQqXk-iLZJw8",dataa);
+  // mergecells("1VSIHG3RrURj4f9I1Oxam6919fzf95klxQqXk-iLZJw8");
+
 }
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -71,14 +93,19 @@ function getNewToken(oAuth2Client, callback) {
   });
 }
 
-function createsheet() {
+
+
+function createsheet(dataa,callback) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.create({
     auth: auth,
+    // sheetId:186001220,
     resource: {
         properties:{
-            title: "sheet2"
+            
+            title: dataa.subject
         }
+        
     }
   }, (err, response) => {
     if (err) {
@@ -89,21 +116,31 @@ function createsheet() {
         JSON.stringify(response);
         const spreadsheetId=response.data.spreadsheetId;
         console.log(spreadsheetId);
+        callback(spreadsheetId);
+        // console.log(dataa.student.key);
+        // console.log(Object.keys(dataa.student));
+        // mergecells(spreadsheetId);
+        // appendData(spreadsheetId,dataa);
+     // deletesheet();       
 
-        appendData(auth,spreadsheetId);
-     // deletesheet(auth);       
     }  
 });
 }
-  function appendData(auth,spreadsheetId) {
+  function appendData(spreadsheetId,dataa) {
     var sheets = google.sheets('v4');
+    var values=[["Rollno","Name","ajajd"]];
+    for (key in dataa.student) {
+        values.push([key,dataa.student[key]]);    
+    }
+
     sheets.spreadsheets.values.append({
       auth: auth,
       spreadsheetId:spreadsheetId,
-      range: 'Sheet1!A1:B', //Change Sheet1 if your worksheet sheet name is something else
+      range: 'Sheet1!A3:B', //Change Sheet1 if your worksheet sheet name is something else
       valueInputOption: "USER_ENTERED",
       resource: {
-        values: [ ["Roll No", "Name", "Atttendance"] ]
+        values: values
+        
       }
     }, (err, response) => {
       if (err) {
@@ -115,7 +152,7 @@ function createsheet() {
       }
     });
   }
-  function deletesheet(auth,spreadsheetId) {   
+  function deletesheet(spreadsheetId) {   
       var sheets = google.sheets('v4');
       sheets.spreadsheets.batchUpdate({
       auth:auth,
@@ -129,4 +166,49 @@ function createsheet() {
       }
     });
 }
+// function mergecells(spreadsheetId){
+//   var sheets = google.sheets('v4');
+//       sheets.spreadsheets.batchUpdate({
+//         auth:auth,
+//         spreadsheetId:spreadsheetId,
+//         requestBody : {
+//           requests :[{
+//             mergeCells : {
+//               range : {
+//                 sheetId : 0,
+//                 startRowIndex :0,
+//                 endRowIndex:1,
+//                 startColumnIndex:2,
+//                 endColumnIndex:6
+//               }
+//             }     
+//           },
+//           {
+//             UpdateCells : {
+//               range : {
+//                 sheetId : 0,
+//                 startRowIndex :0,
+//                 endRowIndex:1,
+//                 startColumnIndex:2,
+//                 endColumnIndex:6
+//               }
+//               rows :[{
+//                 values:[{
+//                   effectiveFormat :{
+
+//                   }
+//                 }]
+//               }]
+//             }
+
+            
+//         ]
+
+//       }
+  
+//         }
+// });
+// }
+
+
 module.exports=createsheet;
