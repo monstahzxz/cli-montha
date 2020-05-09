@@ -12,7 +12,7 @@ const db = mongoose.connect('mongodb://localhost:27017/Datastorage',
 });
 
 //require teacher
-const schemas = require ('./schemas/schema.js');
+const {subjectSchema,userSchema} = require ('./schemas/schema.js');
 
 //functions
 function closeconnection(){
@@ -21,7 +21,7 @@ function closeconnection(){
 
 //add user
 const addUser = (user,callback) => {
-    schemas.create(user).then(user => {
+    userSchema.create(user).then(user => {
         console.info('new User Added');
         //closeconnection();
         callback();
@@ -31,18 +31,26 @@ const addUser = (user,callback) => {
 //find user
 const findUser = (name,callback) => {
     const search = new RegExp(name,'i');   //make case insensitive
-    schemas.find({name : search})
+    userSchema.find({name : search})
     .then(schema => {
-        console.info(schema);
-        console.info(`${schema.length} users matches`);
+        var result =[];
+        for(i=0;i<schema.length;i++){
+            result.push({
+                name:schema.name,
+                email:schema.email,
+                phnNo: schema.phnNo
+            })
+        }
+       // console.info(schema);
+       // console.info(`${schema.length} users matches`);
         //closeconnection();
-        callback();
+        callback(result);
     });
 }
 
 //update user
 const updateUser = (_id,user,callback) => {
-    schemas.updateOne({_id},user)
+    userSchema.updateOne({_id},user)
     .then(schema => {
         console.info('User updated');
        // closeconnection();
@@ -52,7 +60,7 @@ const updateUser = (_id,user,callback) => {
 
 //remove user
 const removeUser = (_id,callback) => {
-    schemas.deleteOne({_id})
+    userSchema.deleteOne({_id})
     .then(schema => {
         console.info('User removed');
        // closeconnection();
@@ -62,11 +70,26 @@ const removeUser = (_id,callback) => {
 
 //List all users
 const listUser = (callback) => {
-    schemas.find()
+    userSchema.find()
     .then(schema => {
-        console.info(schema);
+        for(i=0;i<schema.length;i++)
+        {
+            console.log('\n userId: ' + schema[i]['_id']);
+            console.log('username: ' + schema[i]['name']);
+            console.log('email: ' + schema[i]['email']);
+            console.log('\n');
+        }
+        //console.info(schema);
         console.info(`${schema.length} users matched`);
        // closeconnection();
+        callback();
+    });
+}
+
+const addSubject = (sub,callback) => {
+    subjectSchema.create(sub).then(sub => {
+        console.info('new subject Added');
+        //closeconnection();
         callback();
     });
 }
@@ -77,5 +100,6 @@ module.exports ={
     findUser,
     updateUser,
     removeUser,
-    listUser
+    listUser,
+    addSubject
 }

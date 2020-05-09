@@ -1,12 +1,19 @@
 #!/usr/bin/env node
 var readline = require('readline');
+var fs = require('fs');
+
+'use strict';
+var crypto = require('crypto');
+
+
 
 const {
     addUser,
     findUser,
     updateUser,
     removeUser,
-    listUser
+    listUser,
+    addSubject
 } = require('./index.js');
 
 var interface = readline.createInterface({
@@ -39,7 +46,29 @@ function password_generator(){
     }).join('');
     return randPassword;
 };
+// var genRandomString = function(length){
+//     return crypto.randomBytes(Math.ceil(length/2))
+//             .toString('hex') /** convert to hexadecimal format */
+//             .slice(0,length);   /** return required number of characters */
+// };
 
+// var sha512 = function(password, salt){
+//     var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+//     hash.update(password);
+//     var value = hash.digest('hex');
+//     return {
+//         salt:salt,
+//         passwordHash:value
+//     };
+// };
+
+// function saltHashPassword(userpassword) {
+//     var salt = genRandomString(10); /** Gives us salt of length 16 */
+//     var passwordData = sha512(userpassword, salt);
+//     console.log('UserPassword = '+userpassword);
+//     console.log('Passwordhash = '+passwordData.passwordHash);
+//     console.log('nSalt = '+passwordData.salt);
+// }
 
 processString = function(str,callback){
     if(str == 'addUser' || str == '--au'){
@@ -57,7 +86,8 @@ processString = function(str,callback){
     }
     else if(str == 'findUser' || str == '--fu'){
         interface.question('name of user: ',(name) => {
-            findUser(name,function(){
+            findUser(name,function(result){
+                console.info(result);
                 callback();
             });
         });
@@ -90,8 +120,52 @@ processString = function(str,callback){
             callback();
         });
     }
+    else if(str == 'addSubject' || '--as'){
+        //var id;
+        var choice;
+        interface.question('Subject code : ', (code) => {
+            interface.question('Subject name: ',(name) =>{
+                interface.question('Semester: ',(semester) =>{
+                    interface.question('Teacher: ',(teacher) =>{
+                        findUser(name,(result) =>{
+                            if(result.length > 1){
+                                console.log(result);
+                                interface.question('multiple users found, please select one (1 to n): ',(choice) =>{
+                                    choice = choice;
+                                })
+                            }
+                            else{
+                                choice = 0;
+                            }
+                            createsheet({
+                                semester:semester,
+                                subjectCode:code,
+                                teacher: result[choice].name,
+                                subjectName:name
+                            },function(spreadsheetid){
+                                sub = {
+                                    subjectCode:code,
+                                    subjectName:name,
+                                    semester:semester,
+                                    teacher:result[choice].name,
+                                    spreadsheetid
+                                }
+                                addSubject(sub,function(){
+                                    callback();
+                                });
+                            });
+
+                        });
+                    })
+                })
+            })
+        })
+    }
     else if(str == 'help' || str == '--h'){
-        
+        fs.readFile('help.txt','utf-8',function(err,data){
+            console.log(data);
+            callback();
+        })
     }
     else if(str == "exit"){
         process.exit(0);
