@@ -25,3 +25,23 @@ sub = {
     teacher:result[choice].name,
     spreadsheetid
 }
+
+
+
+createsheet({
+    semester:semester,
+    subjectCode:code,
+    teacher: result[choice].name,
+    subjectName:name
+},function(spreadsheetId){
+    sub = {
+        subjectCode:code,
+        subjectName:name,
+        semester:semester,
+        teacher:result[choice]._id,
+        spreadsheetId:spreadsheetId
+    }
+    addSubject(sub,function(){
+        callback();
+    });
+});

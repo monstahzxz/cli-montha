@@ -23,8 +23,9 @@ const userSchema = mongoose.Schema({
     phnNo : {type: String},
     salt: {type: String}
 });
-schemas.subjectSchema = mongoose.model('subjects',subjectSchema);
+schemas.subjectSchema = mongoose.model('subject',subjectSchema);
 schemas.userSchema = mongoose.model('user',userSchema);
+schemas.studentSchema = mongoose.model('student',studentSchema);
 //export
 module.exports = schemas;
 //mongoose.model('subjects',subjectSchema);
