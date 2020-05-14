@@ -13,7 +13,9 @@ const {
     updateUser,
     removeUser,
     listUser,
-    addSubject
+    addSubject,
+    findSubject,
+    findStudents
 } = require('./index.js');
 
 var interface = readline.createInterface({
@@ -137,21 +139,24 @@ processString = function(str,callback){
                             else{
                                 choice = 0;
                             }
-                            createsheet({
-                                semester:semester,
-                                subjectCode:code,
-                                teacher: result[choice].name,
-                                subjectName:name
-                            },function(spreadsheetid){
-                                sub = {
-                                    subjectCode:code,
-                                    subjectName:name,
+                            findStudents(semester,(result) =>{
+                                createsheet({
                                     semester:semester,
-                                    teacher:result[choice].name,
-                                    spreadsheetid
-                                }
-                                addSubject(sub,function(){
-                                    callback();
+                                    subjectCode:code,
+                                    teacher: result[choice].name,
+                                    subjectName:name,
+                                    students:result
+                                },function(spreadsheetId){
+                                    sub = {
+                                        subjectCode:code,
+                                        subjectName:name,
+                                        semester:semester,
+                                        teacher:result[choice]._id,
+                                        spreadsheetId:spreadsheetId
+                                    }
+                                    addSubject(sub,function(){
+                                        callback();
+                                    });
                                 });
                             });
 
@@ -161,6 +166,41 @@ processString = function(str,callback){
             })
         })
     }
+    else if(str == 'findSubject' || str =='--fs'){
+        interface.question('name of subject: ',(name) =>{
+            findSubject(name,function(result){
+                console.info(result);
+                callback();
+            })
+        });
+    }
+
+    else if(str == 'updateSubject' || str =='--us'){
+        interface.question('id: ',(_id) =>{
+            interface.question("subject name: ",(name) =>{
+                interface.question("subject code: ",(code) => {
+                    interface.question("semester: ",(semester) => {
+                        interface.question("teacher: ",(teacher) =>{
+                            findUser(name,(result) =>{
+                                if(result.length > 1){
+                                    console.log(result);
+                                    interface.question('multiple users found, please select one (1 to n): ',(choice) =>{
+                                        choice = choice;
+                                    })
+                                }
+                                else{
+                                    choice = 0;
+                                }
+                                updateSheet()
+                            });
+                        })
+                    })
+                })
+            })
+        });
+        
+    }
+
     else if(str == 'help' || str == '--h'){
         fs.readFile('help.txt','utf-8',function(err,data){
             console.log(data);

@@ -12,7 +12,7 @@ const db = mongoose.connect('mongodb://localhost:27017/Datastorage',
 });
 
 //require teacher
-const {subjectSchema,userSchema} = require ('./schemas/schema.js');
+const {subjectSchema,userSchema,studentSchema} = require ('./schemas/schema.js');
 
 //functions
 function closeconnection(){
@@ -94,6 +94,37 @@ const addSubject = (sub,callback) => {
     });
 }
 
+const findSubject = (name,callback) => {
+    const search = new RegExp(name,'i');   //make case insensitive
+    subjectSchema.find({name : search})
+    .then(schema => {
+        var result =[];
+        for(i=0;i<schema.length;i++){
+            result.push({
+                code:schema.subjectCode,
+                name:schema.subjectName,
+                semester:schema.String,
+                semester:schema.teacher,
+                sheetid:googleSheetId
+            })
+        }
+        callback(result);
+    });
+}
+
+const findStudents = (semester,callback) => {
+    studentSchema.find({semester:semester})
+    .then(schema =>{
+        var result =[];
+        for(i=0;i<schema.length;i++){
+            result.push({
+                rollNo:schema.rollNo,
+                name:schema.name
+            })
+        }
+        callback();
+    });
+}
 
 module.exports ={
     addUser,
@@ -101,5 +132,7 @@ module.exports ={
     updateUser,
     removeUser,
     listUser,
-    addSubject
+    addSubject,
+    findSubject,
+    findStudents
 }
