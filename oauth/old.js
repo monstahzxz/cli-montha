@@ -2,6 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 
+
 var dataa ={
   semester : "S8-CSE",
   subject : "Data Mining-CS410",
@@ -25,14 +26,18 @@ var attendance ={
   day:"Mon",
  list:["P","A","P","P","A","P","P","A","P","A","P"]
 };
-
+// const x=11;
+// console.log(dataa.subject);
 var auth;
-var a=0;
+
 function init(oauth)
 {
-  auth = oauth;
-  // createsheet(dataa);
-  appendData("1CUThyuCXcvs3-dx6beal0Jzk2fkYfUoo35ZZVxTEmHk",attendance);
+   auth = oauth;
+  //  calculate("1SOiLBW8It4LCdIcr6jrljiQnDZ0T43kDdJafkcFogCE");
+    // createsheet(dataa);
+   appendData("1SOiLBW8It4LCdIcr6jrljiQnDZ0T43kDdJafkcFogCE",attendance);
+  
+
 }
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -96,7 +101,7 @@ function getNewToken(oAuth2Client, callback) {
   });
 }
 
-//create google sheet return spreadsheetId
+
 // function createsheet(dataa,callback) {
 function createsheet(dataa) {
   var sheets = google.sheets('v4');
@@ -111,8 +116,6 @@ function createsheet(dataa) {
         JSON.stringify(response);
         const spreadsheetId=response.data.spreadsheetId;
         console.log(spreadsheetId);                           //remove
-        // sheetData(spreadsheetId,dataa);
-        getData(spreadsheetId);
         sheetData(spreadsheetId,dataa);
         // calculate(spreadsheetId);
         // callback(spreadsheetId);     
@@ -121,63 +124,33 @@ function createsheet(dataa) {
 }
 
 
-function getData(spreadsheetId) {
-  var sheets = google.sheets('v4');
- //add 0 to a cell to use for calculate function
- sheets.spreadsheets.batchUpdate({
-  auth:auth,
-  spreadsheetId:spreadsheetId,     
-  requestBody : {
-    requests :[ 
-  {
-    
-          updateCells : {
-          range : {
-          sheetId : 0,
-          startRowIndex :111,
-          endRowIndex:112,
-          startColumnIndex:0,
-          endColumnIndex:1
-        },
-        fields: '*',
-        rows : [{
-          values : [{
-            userEnteredValue: { numberValue: 0},
-            userEnteredFormat : {
-              verticalAlignment:"Middle",
-              backgroundColor:{
-                red :0,
-                green :0,
-                blue :0
-              },
-              "textFormat": {
-                "foregroundColor": {
-                  "red": 1.0,
-                  "green": 1.0,
-                  "blue": 1.0
-                },
-                "fontSize": 10,
-                "bold": true
-              }
-            }
-         }]
-        }]
-      }
-  }]
-}
-})
-}
+//   function deletesheet(spreadsheetId) {   
+//       var sheets = google.sheets('v4');
+//       sheets.spreadsheets.batchUpdate({
+//       auth:auth,
+//       spreadsheetId:spreadsheetId,
+//       requestBody:{
+//              requests :[{ 
+//                  deleteSheet : {
+//                      sheetId:0 //sheetid here is an int of each sheet in a spreadsheet   
+//                  }
+//              }]
+//       }
+//     });
+// }
 
-//static design of the google sheet
+
 function mergecells(spreadsheetId,dataa){
   var sheets = google.sheets('v4');
+ 
+
   sheets.spreadsheets.batchUpdate({
         auth:auth,
         spreadsheetId:spreadsheetId,     
         requestBody : {
           requests :[ 
         {
-        //title of the spreadsheet
+        //title
        "updateSpreadsheetProperties": {
            "properties": {"title": dataa.subject},
            "fields": "title"
@@ -205,7 +178,7 @@ function mergecells(spreadsheetId,dataa){
            },
            
           {
-            //print row 1
+            //print
                 updateCells : {
                 range : {
                 sheetId : 0,
@@ -217,7 +190,7 @@ function mergecells(spreadsheetId,dataa){
               fields: '*',
               rows : [{
                 values : [{
-                  userEnteredValue: { stringValue: "                                                         Enter P for Present, A for Present                                        Scroll right to see the Attendance tab                               "},
+                  userEnteredValue: { stringValue: "            Enter P for Present, L for Late, E for Excused absence, and U for Unexcused absence. Use the 'Attendance key' tab to customize.                               "},
                   userEnteredFormat : {
                     verticalAlignment:"Middle",
                     backgroundColor:{
@@ -278,7 +251,7 @@ function mergecells(spreadsheetId,dataa){
        },
   
   {
-    //b1 data + colour
+    //b1
         updateCells : {
         range : {
         sheetId : 0,
@@ -480,10 +453,9 @@ function mergecells(spreadsheetId,dataa){
           ]
          }
         })
- 
 }
 
-{    // append static class details
+{    // append attendance taken
   function sheetData(spreadsheetId,dataa) {
    var sheets = google.sheets('v4');
    var values=[];  
@@ -537,7 +509,7 @@ function mergecells(spreadsheetId,dataa){
    requestBody : {
      requests :[
 {
-  //dataa data entry
+  //dataa data
   updateCells : {
   range : {
   sheetId : 0,
@@ -553,7 +525,7 @@ function mergecells(spreadsheetId,dataa){
 }
 ,
 {
-  //dataa semster
+  //dataa data
   updateCells : {
   range : {
   sheetId : 0,
@@ -586,7 +558,7 @@ function mergecells(spreadsheetId,dataa){
 }
 },
 {
-//dataa teacher name
+//dataa data
 updateCells : {
 range : {
 sheetId : 0,
@@ -626,12 +598,9 @@ values:{
 
 }
 
-
-{   
-   // append attendance taken periodwise
+{    // append attendance taken
   function appendData(spreadsheetId,attendance) {
    var sheets = google.sheets('v4');
-
    var details=[];  
    details.push({
     values: [{
@@ -699,146 +668,62 @@ values:{
      ] 
   })
  }
- sheets.spreadsheets.values.get({
-  auth: auth,
-  spreadsheetId: spreadsheetId,
-  range: 'Sheet1!A112:A112', 
-}, (err, response) => {
-    a=Number(response.data.values);
-    console.log(a);
-}
-);
-// console.log(a);
-var a=10;
  sheets.spreadsheets.batchUpdate({
    auth:auth,
    spreadsheetId:spreadsheetId,     
    requestBody : {
      requests :[
-      
-      {
-        //dupe print absent at a110
-            updateCells : {
-            range : {
-            sheetId : 0,
-            startRowIndex :109,
-            endRowIndex:110,
-            startColumnIndex:0,
-            endColumnIndex:1
-          },
-          fields: '*',
-          rows : [{
-            values : [{
-              userEnteredFormat : {
-                verticalAlignment:"Top",
-                horizontalAlignment:"center",
-                backgroundColor:{
-                  red :0.19,
-                  green :0.19,
-                  blue :0.6
-                },
-                "textFormat": {
-                  "foregroundColor": {
-                    "red": 0.19,
-                    "green": 0.19,
-                    "blue": 0.6
-                  },
-                  "fontSize": 14,
-                  "bold": true
-                }
-              },
-              userEnteredValue: { formulaValue :'=countif($C4:$W4,"A")' }
-           }]
-          }]
-        }
-       },
        {
-        //dupe print present at a111
-            updateCells : {
-            range : {
-            sheetId : 0,
-            startRowIndex :110,
-            endRowIndex:111,
-            startColumnIndex:0,
-            endColumnIndex:1
-          },
-          fields: '*',
-          rows : [{
-            values : [{
-              userEnteredFormat : {
-                verticalAlignment:"Top",
-                horizontalAlignment:"center",
-                backgroundColor:{
-                  red :0.19,
-                  green :0.19,
-                  blue :0.6
-                },
-                "textFormat": {
-                  "foregroundColor": {
-                    "red": 0.19,
-                    "green": 0.19,
-                    "blue": 0.6
-                  },
-                  "fontSize": 14,
-                  "bold": true
-                }
-              },
-              userEnteredValue: { formulaValue :'=countif($C4:$W4,"P")' }
-           }]
-          }]
-        }
-       },
-        {
-        //dupe print sum at a112
-            updateCells : {
-            range : {
-            sheetId : 0,
-            startRowIndex :111,
-            endRowIndex:112,
-            startColumnIndex:0,
-            endColumnIndex:1
-          },
-          fields: '*',
-          rows : [{
-            values : [{
-              userEnteredFormat : {
-                verticalAlignment:"Top",
-                horizontalAlignment:"center",
-                backgroundColor:{
-                  red :0.19,
-                  green :0.19,
-                  blue :0.6
-                },
-                "textFormat": {
-                  "foregroundColor": {
-                    "red": 0.19,
-                    "green": 0.19,
-                    "blue": 0.6
-                  },
-                  "fontSize": 14,
-                  "bold": true
-                }
-              },
-              userEnteredValue: { formulaValue :'=($A110+$A111)' }
-           }]
-          }]
-        }
-       },
-      
-    { 
+        
+          insertRange :{
+            range:{
+              sheetId : 0,
+              startRowIndex:1,
+              endRowIndex:100,
+              startColumnIndex :2,
+              endColumnIndex:3,
+            },
+            shiftDimension:"Columns"
+          }
+         },
+         { 
        updateCells : {
          range : {
          sheetId : 0,
          startRowIndex:1,
          endRowIndex:100,
-         startColumnIndex :2+a,
-         endColumnIndex:3+a,
+         startColumnIndex :2,
+         endColumnIndex:3,
           },
         fields: '*',
          rows : details 
      }  
      },
-   
+     {
+      insertRange :{
+        range:{
+          sheetId : 0,
+          startRowIndex:1,
+          endRowIndex:100,
+          startColumnIndex :2,
+          endColumnIndex:3,
+        },
+        shiftDimension:"Columns"
+      }
+     }
+     ,
+     {
+      deleteDimension:{
+        range:{
+          "sheetId": 0,
+          dimension:"Columns",
+          "startIndex": 2,
+          "endIndex": 3
+        }
+      }
+  
+     },
+
      {
       //all column line white
      "updateBorders":{
@@ -898,51 +783,50 @@ var a=10;
        }          
      } 
    },
-  //  {
-  //   //print with color
-  //       updateCells : {
-  //       range : {
-  //       sheetId : 0,
-  //       startRowIndex :0,
-  //       endRowIndex:1,
-  //       startColumnIndex:2,
-  //       endColumnIndex:3
-  //     },
-  //     fields: '*',
-  //     rows : [{
-  //       values : [{
-  //         userEnteredFormat : {
-  //           verticalAlignment:"Middle",
-  //           backgroundColor:{
-  //             red :0.19,
-  //             green :0.19,
-  //             blue :0.6
-  //           },
-  //           "textFormat": {
-  //             "foregroundColor": {
-  //               "red": 1.0,
-  //               "green": 1.0,
-  //               "blue": 1.0
-  //             },
-  //             "fontSize": 10,
-  //             "bold": true
-  //           }
-  //         },
-  //         userEnteredValue: { stringValue: "                                                                      Enter P for Present, A for Present                                Scroll right to see the Attendance tab                               "},
-  //      },
-        
-  //     ]
-  //     }]
-  //   }
-  //  },
+   {
+    //print with color
+        updateCells : {
+        range : {
+        sheetId : 0,
+        startRowIndex :0,
+        endRowIndex:1,
+        startColumnIndex:2,
+        endColumnIndex:3
+      },
+      fields: '*',
+      rows : [{
+        values : [{
+          userEnteredFormat : {
+            verticalAlignment:"Middle",
+            backgroundColor:{
+              red :0.19,
+              green :0.19,
+              blue :0.6
+            },
+            "textFormat": {
+              "foregroundColor": {
+                "red": 1.0,
+                "green": 1.0,
+                "blue": 1.0
+              },
+              "fontSize": 10,
+              "bold": true
+            }
+          },
+          userEnteredValue: { stringValue: "            Enter P for Present, L for Late, E for Excused absence, and U for Unexcused absence. Use the 'Attendance key' tab to customize.                               "},
+       }]
+      }]
+    }
+   }
+     
     ]
    }
   })
-   calculate(spreadsheetId);
+  // calculate(spreadsheetId);
   }
 }
 var x="4";
-//formula stats
+//formula
 function calculate(spreadsheetId)
 {
   var sheets = google.sheets('v4');
@@ -1037,9 +921,7 @@ sheets.spreadsheets.batchUpdate({
   auth:auth,
   spreadsheetId:spreadsheetId,     
   requestBody : {
-    requests :[
-     
-      {
+    requests :[{
       updateCells : {
         range:{
         sheetId : 0,
@@ -1215,7 +1097,7 @@ sheets.spreadsheets.batchUpdate({
     }
      },
      {
-      //a
+      //p
      updateCells : {
        range : {
        sheetId : 0,
@@ -1251,7 +1133,7 @@ sheets.spreadsheets.batchUpdate({
    }
     },
     {
-      //avg
+      //p
      updateCells : {
        range : {
        sheetId : 0,
@@ -1287,39 +1169,7 @@ sheets.spreadsheets.batchUpdate({
    }
     },
     {
-      addConditionalFormatRule:{
-        index:0,
-        rule:{
-          ranges:[{
-            sheetId : 0,
-            startRowIndex :2,
-            endRowIndex:100,
-            startColumnIndex:25,
-            endColumnIndex:26      
-          },],
-          booleanRule:{
-            condition:{
-              type : "NUMBER_LESS",
-              values:[{
-                userEnteredValue: "75"
-
-              }]
-            },
-            format:{
-              backgroundColor:{
-                "red": 1,
-                "green": 1,
-                "blue": 0,
-                "alpha":0
-              }
-            }
-
-          }
-        }
-      }
-    },
-    {
-      //grey at row 2 column X 
+      //yellow at row 1 column 10,11,12
           updateCells : {
           range : {
           sheetId : 0,
@@ -1343,7 +1193,7 @@ sheets.spreadsheets.batchUpdate({
       }
      },
      {
-      //grey at row 1 column Y
+      //yellow at row 1 column 10,11,12
           updateCells : {
           range : {
           sheetId : 0,
@@ -1367,7 +1217,7 @@ sheets.spreadsheets.batchUpdate({
       }
      },
      {
-      //grey at row 1 column Z
+      //yellow at row 1 column 10,11,12
           updateCells : {
           range : {
           sheetId : 0,
