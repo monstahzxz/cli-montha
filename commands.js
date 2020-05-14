@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+
+var rl = require('readline');
+
+rl.on('line', function(line)){
+
+}
+
 const program = require('commander');
 const {prompt} = require('inquirer');
 
