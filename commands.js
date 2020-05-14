@@ -17,15 +17,21 @@ const {
     listUser
 } = require('./index.js');
 
+//new codes questions
+
+// var readline = require('readline');
+
+// var _interface = readline.createInterface({
+//     input : process.stdin,
+//     output :process.stdout,
+//     prompt : '>> '
+// });
+
+// _interface.prompt
 
 //questions
 
 const questions = [
-    {
-        type: 'input',
-        name: 'ID',
-        message: 'user ID'
-    },
     {
         type: 'input',
         name: 'name',
@@ -50,7 +56,7 @@ const questions = [
 
 program
     .version('1.0.0')
-    .description('Attendence Management System');
+    .description('Attendance Management System');
 
 program
     .command('addUser')
