@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^5.0.0",
+    "googleapis": "^51.0.0",
     "inquirer": "^7.1.0",
     "line-reader": "^0.4.0",
     "mongoose": "^5.9.6",
