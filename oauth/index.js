@@ -4,23 +4,59 @@ const {google} = require('googleapis');
 
 var dataa ={
   semester : "S8-CSE",
-  subject : "Data Mining-CS410",
+  subjectName : "Data Mining",
+  subjectCode:"CS410",
   teacher : "Dr Salim A",
-  student : {
-    1 : "Saran",
-    2 : "Sonu",
-    3 : "Vimal",
-    4 : "Vivi",
-    5 : "Sabu",
-    6 : "Sanju",
-    7 : "Testh",
-    8 : "Akhil",
-    9 : "Maddy",
-    10 : "Jk",
-    11 : "Pandi"
-  }
+  student :[
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:2,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    },
+    {
+      rollNo:1,
+      name:"saran"
+    }
+
+  ]
 };
 var attendance ={
+  noofhours:2,
   date:"16/9",
   day:"Mon",
  list:["P","A","P","P","A","P","P","A","P","A","P"]
@@ -32,7 +68,7 @@ function init(oauth)
 {
   auth = oauth;
   // createsheet(dataa);
-  appendData("1CUThyuCXcvs3-dx6beal0Jzk2fkYfUoo35ZZVxTEmHk",attendance);
+  appendData("1SmXqlgESv6luhhsfyWDAinnUjoNwtyfifknrTxIntDI",attendance,attendance.noofhours);
 }
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -114,7 +150,7 @@ function createsheet(dataa) {
         // sheetData(spreadsheetId,dataa);
         getData(spreadsheetId);
         sheetData(spreadsheetId,dataa);
-        // calculate(spreadsheetId);
+        calculate(spreadsheetId);
         // callback(spreadsheetId);     
     }  
 });
@@ -179,7 +215,7 @@ function mergecells(spreadsheetId,dataa){
         {
         //title of the spreadsheet
        "updateSpreadsheetProperties": {
-           "properties": {"title": dataa.subject},
+           "properties": {"title": dataa.subjectName +"-"+ dataa.subjectCode+"-"},
            "fields": "title"
         }
         },
@@ -487,13 +523,13 @@ function mergecells(spreadsheetId,dataa){
   function sheetData(spreadsheetId,dataa) {
    var sheets = google.sheets('v4');
    var values=[];  
-   for(key in dataa.student)
+   for(key of dataa.student)
    {
      values.push(
        {
          values : [{
           userEnteredValue :{
-               stringValue : key 
+               numberValue : key["rollNo"] 
           },
           userEnteredFormat:{
             horizontalAlignment :"center",
@@ -511,7 +547,7 @@ function mergecells(spreadsheetId,dataa){
        ,
        {
          userEnteredValue :{
-              stringValue : dataa.student[key]
+              stringValue : key["name"]
          },
          userEnteredFormat:{
            horizontalAlignment :"center",
@@ -629,9 +665,9 @@ values:{
 
 {   
    // append attendance taken periodwise
-  function appendData(spreadsheetId,attendance) {
+  function appendData(spreadsheetId,attendance,hours) {
+    console.log("pra");
    var sheets = google.sheets('v4');
-
    var details=[];  
    details.push({
     values: [{
@@ -673,7 +709,7 @@ values:{
    
     }]
   });
-  
+    
     
    for(key of attendance["list"])
    {
@@ -699,17 +735,15 @@ values:{
      ] 
   })
  }
+  
  sheets.spreadsheets.values.get({
   auth: auth,
   spreadsheetId: spreadsheetId,
   range: 'Sheet1!A112:A112', 
 }, (err, response) => {
     a=Number(response.data.values);
-    console.log(a);
-}
-);
-// console.log(a);
-var a=10;
+
+ 
  sheets.spreadsheets.batchUpdate({
    auth:auth,
    spreadsheetId:spreadsheetId,     
@@ -898,49 +932,24 @@ var a=10;
        }          
      } 
    },
-  //  {
-  //   //print with color
-  //       updateCells : {
-  //       range : {
-  //       sheetId : 0,
-  //       startRowIndex :0,
-  //       endRowIndex:1,
-  //       startColumnIndex:2,
-  //       endColumnIndex:3
-  //     },
-  //     fields: '*',
-  //     rows : [{
-  //       values : [{
-  //         userEnteredFormat : {
-  //           verticalAlignment:"Middle",
-  //           backgroundColor:{
-  //             red :0.19,
-  //             green :0.19,
-  //             blue :0.6
-  //           },
-  //           "textFormat": {
-  //             "foregroundColor": {
-  //               "red": 1.0,
-  //               "green": 1.0,
-  //               "blue": 1.0
-  //             },
-  //             "fontSize": 10,
-  //             "bold": true
-  //           }
-  //         },
-  //         userEnteredValue: { stringValue: "                                                                      Enter P for Present, A for Present                                Scroll right to see the Attendance tab                               "},
-  //      },
-        
-  //     ]
-  //     }]
-  //   }
-  //  },
     ]
    }
-  })
-   calculate(spreadsheetId);
+  },(replies)=>{
+    if(hours>1)
+    {
+      appendData(spreadsheetId,attendance,hours-1);
+    }
+  }
+
+  )
+
+}
+);
+  //  calculate(spreadsheetId);
   }
 }
+
+
 var x="4";
 //formula stats
 function calculate(spreadsheetId)
