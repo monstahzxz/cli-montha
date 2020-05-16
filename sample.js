@@ -19,6 +19,8 @@ const {
     addStudents
 } = require('./index.js');
 
+const createsheet = require('./oauth/index.js');
+
 var interface = readline.createInterface({
     input : process.stdin,
     output :process.stdout,
