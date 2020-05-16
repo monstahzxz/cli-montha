@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
     password : {type: String},
     email: {type: String},
     phnNo : {type: String},
-    salt: {type: String}
+    //salt: {type: String}
 });
 schemas.subjectSchema = mongoose.model('subject',subjectSchema);
 schemas.userSchema = mongoose.model('user',userSchema);

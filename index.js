@@ -31,11 +31,15 @@ const addUser = (user,callback) => {
 
 //find user
 const findUser = (name,callback) => {
-    const search = new RegExp(name,'i');   //make case insensitive
+    //const search = new RegExp(name,'i');   //make case insensitive
+    const search = name;
+    console.log(search);
     userSchema.find({name : search})
+    
     .then(schema => {
         var result =[];
         for(i=0;i<schema.length;i++){
+            console.log(result);
             result.push({
                 name:schema.name,
                 email:schema.email,
