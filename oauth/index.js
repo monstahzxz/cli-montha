@@ -133,8 +133,8 @@ function getNewToken(oAuth2Client, callback) {
 }
 
 //create google sheet return spreadsheetId
-// function createsheet(dataa,callback) {
-function createsheet(dataa) {
+function createsheet(dataa,callback) {
+// function createsheet(dataa) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.create({
     auth: auth,
@@ -666,7 +666,6 @@ values:{
 {   
    // append attendance taken periodwise
   function appendData(spreadsheetId,attendance,hours) {
-    console.log("pra");
    var sheets = google.sheets('v4');
    var details=[];  
    details.push({
