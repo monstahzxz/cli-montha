@@ -7,12 +7,22 @@ Options:
   -h, --help           display help for command
 
 Commands:
-  addUser|au           add a user
-        options:
-                -c | --csv      add from a csv file
-                
-  findUser|fu <name>   find a user
-  updateUser|uu <_id>  update a user
-  removeUser|ru <_id>  remove a user
+
+To add an User
+  addUser|au           add a user                
+  findUser|fu          find a user
+  updateUser|uu        update a user
+  removeUser|ru        remove a user
   listUser|lu          list all users
-  help [command]       display help for command
+
+To add a subject
+  addSubject|as        add a subject
+  findSubject|fs       find a subject
+  updateSubject|us     update a subject
+
+To add students
+  addStudents          add all the student details
+
+Other  
+  help                 display help for command
+  exit                 exit

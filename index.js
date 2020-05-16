@@ -5,6 +5,7 @@ var MongoClient = require('mongodb').MongoClient;
 mongoose.Promise = global.Promise;
 //connection to db
 
+const fs = require('fs');
 const db = mongoose.connect('mongodb://localhost:27017/Datastorage',
 {
     useUnifiedTopology: true,
@@ -122,8 +123,31 @@ const findStudents = (semester,callback) => {
                 name:schema.name
             })
         }
-        callback();
+        callback(result);
     });
+}
+
+const addStudents = (semester,filename,callback) => {
+    var arr;
+    var file = "G:/attendance/students/" + filename;
+    fs.readFile(file,'utf-8', function (err, data) {
+    if (err) {
+        throw err;
+    }
+    arr = data.split('\n');
+    for(i=0;i<arr.length;i++){
+        var a = arr[i].split(',');
+        var obj ={
+            semester:semester,
+            rollNo:a[0],
+            name:a[1]
+        }
+        studentSchema.create(obj),then(obj =>{
+            console.log("students added ");
+            callback();
+        })
+    }
+});
 }
 
 module.exports ={
@@ -134,5 +158,6 @@ module.exports ={
     listUser,
     addSubject,
     findSubject,
-    findStudents
+    findStudents,
+    addStudents
 }

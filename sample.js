@@ -15,7 +15,8 @@ const {
     listUser,
     addSubject,
     findSubject,
-    findStudents
+    findStudents,
+    addStudents
 } = require('./index.js');
 
 var interface = readline.createInterface({
@@ -122,7 +123,7 @@ processString = function(str,callback){
             callback();
         });
     }
-    else if(str == 'addSubject' || '--as'){
+    else if(str == 'addSubject' || str== '--as'){
         //var id;
         var choice;
         interface.question('Subject code : ', (code) => {
@@ -164,7 +165,7 @@ processString = function(str,callback){
                     })
                 })
             })
-        })
+        });
     }
     else if(str == 'findSubject' || str =='--fs'){
         interface.question('name of subject: ',(name) =>{
@@ -197,21 +198,38 @@ processString = function(str,callback){
                     })
                 })
             })
+        });    
+    }
+
+    else if(str == "addStudents"){
+        interface.question("which semester : ",(semester)=> {
+            interface.question("filename : ",(filename) =>{
+                addStudents(semester,filename,function(){
+                    callback();
+                });
+            })
         });
         
     }
 
-    else if(str == 'help' || str == '--h'){
-        fs.readFile('help.txt','utf-8',function(err,data){
+    else if(str == 'help' || str == 'attendance -h' || str == "attendance --help"){
+        //console.log("sdhbvfhdsvfh");
+        fs.readFile('G:/attendance/help.txt','utf-8',function(err,data){
+            if (err){
+                console.log(err);
+            }
             console.log(data);
             callback();
         })
+    }
+    else if(str == "attendance -V" || str =="attendance --version"){
+        console.log("1.0.0");
     }
     else if(str == "exit"){
         process.exit(0);
     }
     else{
-        console.log('enter valid command');
+        console.log('enter valid command \n Type help to display all commands');
         callback();
     }
     }
