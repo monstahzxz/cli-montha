@@ -92,7 +92,7 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const TOKEN_PATH = 'token.json';
 
 // Load client secrets from a local file.
-fs.readFile('credentials.json', (err, content) => {
+fs.readFile('./oauth/credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Google Sheets API.
   authorize(JSON.parse(content), init);
@@ -163,7 +163,6 @@ function createsheet(dataa,callback) {
         JSON.stringify(response);
         const spreadsheetId=response.data.spreadsheetId;
         console.log(spreadsheetId);                           //remove
-        // sheetData(spreadsheetId,dataa);
         getData(spreadsheetId);
         sheetData(spreadsheetId,dataa);
         calculate(spreadsheetId);
@@ -172,7 +171,7 @@ function createsheet(dataa,callback) {
 });
 }
 
-function updatedata(spreadsheetId,update1){
+function updatedata(spreadsheetId,update){
   var sheets = google.sheets('v4');
   sheets.spreadsheets.batchUpdate({
     auth:auth,
@@ -1608,5 +1607,5 @@ sheets.spreadsheets.batchUpdate({
   }
 })
  }
-
- module.exports=createsheet;
+ module.exports = {sheetData,createsheet};
+//  module.exports= createsheet;

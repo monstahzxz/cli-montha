@@ -15,11 +15,18 @@ const {
     listUser,
     addSubject,
     findSubject,
+    removeSubject,
+    listSubjects,
     findStudents,
-    addStudents
+    deleteStudents,
+    addStudents,
+    getsheetid
 } = require('./index.js');
 
-const createsheet = require('./oauth/index.js');
+const {
+    sheetData,
+    createsheet
+} = require('./oauth/index.js');
 
 var interface = readline.createInterface({
     input : process.stdin,
@@ -76,7 +83,7 @@ function password_generator(){
 // }
 
 processString = function(str,callback){
-    if(str == 'addUser' || str == '--au'){
+    if(str == 'addUser'){
         interface.question('username : ',(username) => {
             interface.question('email: ',(email) =>{
                 interface.question('phone number: ',(phnno) =>{
@@ -98,11 +105,11 @@ processString = function(str,callback){
         });
     }
     else if(str == 'updateUser' || str == '--uu'){
-        interface.question('id : ',(_id) => {
+        interface.question('enter the id of user : ',(_id) => {
             interface.question('new name: ',(username) => {
-                interface.question('password: ',(password) =>{
-                    interface.question('email: ',(email) =>{
-                        interface.question('phnno: ',(phnno) => {
+                interface.question('new password: ',(password) =>{
+                    interface.question('new email: ',(email) =>{
+                        interface.question('new phnno: ',(phnno) => {
                             user = {name:username,password:password,email:email,phnNo:phnno};
                             updateUser(_id,user,function(){
                                 callback();
@@ -114,14 +121,15 @@ processString = function(str,callback){
         });
     } 
     else if(str == 'removeUser' || str == '--ru'){
-        interface.question('id',(_id) =>{
+        interface.question('enter the id of user : ',(_id) =>{
             removeUser(_id,function(){
                 callback();
             });
         });
     } 
-    else if(str =='listUser' || str == '--lu'){
-        listUser(function(){
+    else if(str =='listUsers' || str == '--lu'){
+        listUser(function(res){
+            console.log(res);
             callback();
         });
     }
@@ -132,36 +140,57 @@ processString = function(str,callback){
             interface.question('Subject name: ',(name) =>{
                 interface.question('Semester: ',(semester) =>{
                     interface.question('Teacher: ',(teacher) =>{
-                        findUser(name,(result) =>{
+                        findUser(teacher,(result) =>{ 
                             if(result.length > 1){
                                 console.log(result);
-                                interface.question('multiple users found, please select one (1 to n): ',(choice) =>{
-                                    choice = choice;
+                                interface.question('multiple users found, please select one (1 to n): ',(c) =>{
+                                    choice = c-1;
+                                    findStudents(semester,(results) =>{
+                                        createsheet({
+                                            semester:semester,
+                                            subjectCode:code,
+                                            teacher: result[choice].name,
+                                            subjectName:name,
+                                            student:results
+                                        },(spreadsheetId) => {
+                                            sub = {
+                                                subjectCode:code,
+                                                subjectName:name,
+                                                semester:semester,
+                                                teacher:result[choice]._id,
+                                                googleSheetId:spreadsheetId
+                                            }
+                                            addSubject(sub,function(){
+                                                callback();
+                                            });
+                                        });
+                                    });
                                 })
                             }
                             else{
                                 choice = 0;
-                            }
-                            findStudents(semester,(result) =>{
-                                createsheet({
-                                    semester:semester,
-                                    subjectCode:code,
-                                    teacher: result[choice].name,
-                                    subjectName:name,
-                                    students:result
-                                },function(spreadsheetId){
-                                    sub = {
-                                        subjectCode:code,
-                                        subjectName:name,
+                                findStudents(semester,(results) =>{
+                                    createsheet({
                                         semester:semester,
-                                        teacher:result[choice]._id,
-                                        spreadsheetId:spreadsheetId
-                                    }
-                                    addSubject(sub,function(){
-                                        callback();
+                                        subjectCode:code,
+                                        teacher: result[choice].name,
+                                        subjectName:name,
+                                        student:results
+                                    },(spreadsheetId) => {
+                                        sub = {
+                                            subjectCode:code,
+                                            subjectName:name,
+                                            semester:semester,
+                                            teacher:result[choice]._id,
+                                            googleSheetId:spreadsheetId
+                                        }
+                                        addSubject(sub,function(){
+                                            callback();
+                                        });
                                     });
                                 });
-                            });
+                            }
+                            
 
                         });
                     })
@@ -184,17 +213,39 @@ processString = function(str,callback){
                 interface.question("subject code: ",(code) => {
                     interface.question("semester: ",(semester) => {
                         interface.question("teacher: ",(teacher) =>{
-                            findUser(name,(result) =>{
+                            findUser(teacher,(result) =>{
                                 if(result.length > 1){
                                     console.log(result);
-                                    interface.question('multiple users found, please select one (1 to n): ',(choice) =>{
-                                        choice = choice;
+                                    interface.question('multiple users found, please select one (1 to n): ',(c) =>{
+                                        choice = c-1;
+                                        sheetid = getsheetid(_id,()=>{
+                                            callback();
+                                        });
+                                        sheetData(sheetid,{
+                                            semester:semester,
+                                            subjectName:name,
+                                            subjectCode:code,
+                                            teacher:result[choice].name
+                                        });
+                                        console.log("subject Updated");
+                                        callback();
                                     })
                                 }
                                 else{
                                     choice = 0;
+                                    sheetid = getsheetid(_id,()=>{
+                                        callback();
+                                    });
+                                    sheetData(sheetid,{
+                                        semester:semester,
+                                        subjectName:name,
+                                        subjectCode:code,
+                                        teacher:result[choice].name
+                                    });
+                                    console.log("subject Updated");
+                                    callback();
                                 }
-                                updateSheet()
+                                
                             });
                         })
                     })
@@ -202,7 +253,27 @@ processString = function(str,callback){
             })
         });    
     }
+    else if(str =="removeSubject"){
+        interface.question("enter subject name: ",(subject) => {
+            removeSubject(subject,function(){
+                callback();
+            })
+        });
+    }
+    else if(str =='listSubjects'){
+        listSubjects(function(){
+            callback();
+        });
+    }
 
+    else if(str == "findStudents"){
+        interface.question("Please enter the semester : ",(semester) =>{
+            findStudents(semester,function(result){
+                console.info(result);
+                callback();
+            })
+        })
+    }
     else if(str == "addStudents"){
         interface.question("which semester : ",(semester)=> {
             interface.question("filename : ",(filename) =>{
@@ -210,11 +281,18 @@ processString = function(str,callback){
                     callback();
                 });
             })
-        });
-        
+        });   
     }
 
-    else if(str == 'help' || str == 'attendance -h' || str == "attendance --help"){
+    else if(str == "deleteStudents"){
+        interface.question("which semester: ",(semester)=>{
+            deleteStudents(semester,function(){
+                callback();
+            });
+        });
+    }
+
+    else if(str == 'help'){
         //console.log("sdhbvfhdsvfh");
         fs.readFile('G:/attendance/help.txt','utf-8',function(err,data){
             if (err){
@@ -224,7 +302,7 @@ processString = function(str,callback){
             callback();
         })
     }
-    else if(str == "attendance -V" || str =="attendance --version"){
+    else if(str == "version"){
         console.log("1.0.0");
     }
     else if(str == "exit"){
