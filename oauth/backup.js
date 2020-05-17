@@ -4,53 +4,53 @@ const {google} = require('googleapis');
 
 var dataa ={
   semester : "S8-CSE",
-  subjectName : "Data Mining",
+  subjectName : "Data Mining-CS410",
   subjectCode:"CS410",
   teacher : "Dr Salim A",
-  students :[
+  student :[
     {
       rollNo:1,
       name:"saran"
     },
     {
       rollNo:2,
-      name:"sonu"
+      name:"saran"
     },
     {
-      rollNo:3,
-      name:"vimal"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:4,
-      name:"vivek"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:5,
-      name:"jk"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:6,
-      name:"maddy"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:7,
-      name:"darin"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:8,
-      name:"sanju"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:9,
-      name:"akhil"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:10,
-      name:"abhi"
+      rollNo:1,
+      name:"saran"
     },
     {
-      rollNo:11,
-      name:"sidhu"
+      rollNo:1,
+      name:"saran"
     }
 
   ]
@@ -61,21 +61,6 @@ var attendance ={
   day:"Mon",
  list:["P","A","P","P","A","P","P","A","P","A","P"]
 };
- 
-var update={
-  semester : "S7-CSE",
-  subjectName : "Disaster Management",
-  subjectCode:"CIV100",
-  teacher : "Dr Abdul Nizar",
-};
-
-
-var update1={
-  semester : "S9-MECH",
-  subjectName : "Principles of Management",
-  subjectCode:"ME100",
-  teacher : "Dr Ajeesh R",
-};
 
 var auth;
 var a=0;
@@ -83,8 +68,7 @@ function init(oauth)
 {
   auth = oauth;
   // createsheet(dataa);
-  // appendData("1SmXqlgESv6luhhsfyWDAinnUjoNwtyfifknrTxIntDI",attendance,attendance.noofhours);
-  updatedata("1SmXqlgESv6luhhsfyWDAinnUjoNwtyfifknrTxIntDI",update);
+  appendData("1UL4dYBa4aiSrajlAP3FrrzCHc0-qZ5cOZ3rJ4-eRnAE",attendance);
 }
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -149,8 +133,8 @@ function getNewToken(oAuth2Client, callback) {
 }
 
 //create google sheet return spreadsheetId
-function createsheet(dataa,callback) {
-// function createsheet(dataa) {
+// function createsheet(dataa,callback) {
+function createsheet(dataa) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.create({
     auth: auth,
@@ -166,158 +150,12 @@ function createsheet(dataa,callback) {
         // sheetData(spreadsheetId,dataa);
         getData(spreadsheetId);
         sheetData(spreadsheetId,dataa);
-        calculate(spreadsheetId);
-        callback(spreadsheetId);     
+        // calculate(spreadsheetId);
+        // callback(spreadsheetId);     
     }  
 });
 }
 
-function updatedata(spreadsheetId,update1){
-  var sheets = google.sheets('v4');
-  sheets.spreadsheets.batchUpdate({
-    auth:auth,
-    spreadsheetId:spreadsheetId,     
-    requestBody : {
-      requests :[ 
-    {
-    //title of the spreadsheet
-   "updateSpreadsheetProperties": {
-       "properties": {"title": update.subjectName +"-"+ update.subjectCode+"-"},
-       "fields": "title"
-    }
-    },
-    {
-      //dataa semster
-      updateCells : {
-      range : {
-      sheetId : 0,
-      startRowIndex:1,
-      endRowIndex:2,
-      startColumnIndex :1,
-      endColumnIndex:2,
-       },
-     fields: '*',
-      rows :[{
-        values:{
-          userEnteredValue :{
-               stringValue : update.semester
-          },
-          userEnteredFormat:{
-            horizontalAlignment :"center",
-            "textFormat": {
-              "foregroundColor": {
-                "red": 0,
-                "green": 0,
-                "blue": 1
-              },
-              "fontSize": 12,
-              "bold": true
-            },
-          }
-          
-       }
-      }] 
-    }
-},
-    {
-    //dataa teacher name
-    updateCells : {
-    range : {
-    sheetId : 0,
-    startRowIndex:2,
-    endRowIndex:3,
-    startColumnIndex :1,
-    endColumnIndex:2,
-    },
-    fields: '*',
-    rows :[{
-    values:{
-      userEnteredValue :{
-           stringValue : update.teacher
-      },
-      userEnteredFormat:{
-        horizontalAlignment :"center",
-        "textFormat": {
-          "foregroundColor": {
-            "red": 0,
-            "green": 0,
-            "blue": 1
-          },
-          "fontSize": 10,
-          "bold": true
-        },
-      }
-      
-    }
-  }]
-}
-    },
-    {
-      //row 2-3 border thick
-    "updateBorders":{
-       "range": {
-         "sheetId": 0,
-         "startRowIndex": 2,
-         "endRowIndex": 3
-       },
-       "bottom": {
-         "style": "Solid_thick",
-         "width": 20,
-         "color": {
-           red :0.8,
-           blue :0.8,
-           green :0.8
-         }
-     }     
-       } 
-   },
-  {
-    //column 1-2 border thick
-   "updateBorders":{
-      "range": {
-        "sheetId": 0,
-        "startColumnIndex": 1,
-        "endColumnIndex": 2
-      },
-      "right": {
-        "style": "Solid_thick",
-        "width": 20,
-        "color": {
-          red :0.8,
-          blue :0.8,
-          green :0.8
-        }
-    }     
-      } 
-  },
-  
-  {
-    //row 1-2 border dash-white
-    "updateBorders":{
-       "range": {
-         "sheetId": 0,
-         "startRowIndex": 1,
-         "endRowIndex": 2
-       },
-       "bottom": {
-         "style": "dashed",
-         "width": 1,
-         "color": {
-           red :1,
-           blue :1,
-           green :1
-         }
-       }          
-     } 
-   }
-
-
-  ] 
-
-}
-})
-
-}
 
 function getData(spreadsheetId) {
   var sheets = google.sheets('v4');
@@ -377,7 +215,7 @@ function mergecells(spreadsheetId,dataa){
         {
         //title of the spreadsheet
        "updateSpreadsheetProperties": {
-           "properties": {"title": dataa.subjectName +"-"+ dataa.subjectCode+"-"},
+           "properties": {"title": dataa.subjectName},
            "fields": "title"
         }
         },
@@ -685,7 +523,7 @@ function mergecells(spreadsheetId,dataa){
   function sheetData(spreadsheetId,dataa) {
    var sheets = google.sheets('v4');
    var values=[];  
-   for(key of dataa.students)
+   for(key of dataa.student)
    {
      values.push(
        {
@@ -827,8 +665,10 @@ values:{
 
 {   
    // append attendance taken periodwise
-  function appendData(spreadsheetId,attendance,hours) {
+  function appendData(spreadsheetId,attendance) {
    var sheets = google.sheets('v4');
+  for(i=1;i<=attendance.noofhours;i++)
+  {
    var details=[];  
    details.push({
     values: [{
@@ -870,7 +710,7 @@ values:{
    
     }]
   });
-    
+  
     
    for(key of attendance["list"])
    {
@@ -896,14 +736,13 @@ values:{
      ] 
   })
  }
-  
+  }
  sheets.spreadsheets.values.get({
   auth: auth,
   spreadsheetId: spreadsheetId,
   range: 'Sheet1!A112:A112', 
 }, (err, response) => {
     a=Number(response.data.values);
-
  
  sheets.spreadsheets.batchUpdate({
    auth:auth,
@@ -1093,24 +932,51 @@ values:{
        }          
      } 
    },
+  //  {
+  //   //print with color
+  //       updateCells : {
+  //       range : {
+  //       sheetId : 0,
+  //       startRowIndex :0,
+  //       endRowIndex:1,
+  //       startColumnIndex:2,
+  //       endColumnIndex:3
+  //     },
+  //     fields: '*',
+  //     rows : [{
+  //       values : [{
+  //         userEnteredFormat : {
+  //           verticalAlignment:"Middle",
+  //           backgroundColor:{
+  //             red :0.19,
+  //             green :0.19,
+  //             blue :0.6
+  //           },
+  //           "textFormat": {
+  //             "foregroundColor": {
+  //               "red": 1.0,
+  //               "green": 1.0,
+  //               "blue": 1.0
+  //             },
+  //             "fontSize": 10,
+  //             "bold": true
+  //           }
+  //         },
+  //         userEnteredValue: { stringValue: "                                                                      Enter P for Present, A for Present                                Scroll right to see the Attendance tab                               "},
+  //      },
+        
+  //     ]
+  //     }]
+  //   }
+  //  },
     ]
    }
-  },(replies)=>{
-    if(hours>1)
-    {
-      appendData(spreadsheetId,attendance,hours-1);
-    }
-  }
-
-  )
-
+  })
 }
 );
-  //  calculate(spreadsheetId);
+   calculate(spreadsheetId);
   }
 }
-
-
 var x="4";
 //formula stats
 function calculate(spreadsheetId)
@@ -1508,7 +1374,6 @@ sheets.spreadsheets.batchUpdate({
                 "blue": 0.839
               }
             }
-
          }]
         }]
       }
@@ -1533,7 +1398,6 @@ sheets.spreadsheets.batchUpdate({
                 "blue": 0.839
               }
             }
-
          }]
         }]
       }
@@ -1580,7 +1444,6 @@ sheets.spreadsheets.batchUpdate({
          }
      }     
        } 
-
    },
    {
     //row 1-2 border dash-white
