@@ -2,10 +2,6 @@ Usage: commands [options] [command]
 
 Attendance Management System
 
-Options:
-  -V, --version        output the version number
-  -h, --help           display help for command
-
 Commands:
 
 To add an User
@@ -25,4 +21,5 @@ To add students
 
 Other  
   help                 display help for command
+  version              display the version of application
   exit                 exit

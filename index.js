@@ -6,6 +6,7 @@ mongoose.Promise = global.Promise;
 //connection to db
 
 const fs = require('fs');
+var xlsx = require('xlsx');
 const db = mongoose.connect('mongodb://localhost:27017/Datastorage',
 {
     useUnifiedTopology: true,
@@ -31,19 +32,18 @@ const addUser = (user,callback) => {
 
 //find user
 const findUser = (name,callback) => {
-    //const search = new RegExp(name,'i');   //make case insensitive
-    const search = name;
-    console.log(search);
+    const search = new RegExp(name,'i');   //make case insensitive
     userSchema.find({name : search})
     
     .then(schema => {
         var result =[];
         for(i=0;i<schema.length;i++){
-            console.log(result);
+            //console.log(result);
             result.push({
-                name:schema.name,
-                email:schema.email,
-                phnNo: schema.phnNo
+                _id:schema[i]._id,
+                name:schema[i].name,
+                email:schema[i].email,
+                phnNo: schema[i].phnNo
             })
         }
        // console.info(schema);
@@ -101,20 +101,37 @@ const addSubject = (sub,callback) => {
 
 const findSubject = (name,callback) => {
     const search = new RegExp(name,'i');   //make case insensitive
-    subjectSchema.find({name : search})
+    subjectSchema.find({subjectName : search})
     .then(schema => {
         var result =[];
         for(i=0;i<schema.length;i++){
             result.push({
-                code:schema.subjectCode,
-                name:schema.subjectName,
-                semester:schema.String,
-                semester:schema.teacher,
-                sheetid:googleSheetId
+                code:schema[i].subjectCode,
+                name:schema[i].subjectName,
+                semester:schema[i].semester,
+                teacher:schema[i].teacher,
+                sheetid:schema[i].googleSheetId
             })
         }
         callback(result);
     });
+}
+
+const removeSubject = (subject,callback) =>{
+    const search = new RegExp(subject,'i');
+    subjectSchema.deleteOne({subjectName:search})
+    .then(schema => {
+        console.log("Subject removed");
+        callback();
+    })
+}
+
+const listSubjects = (callback) =>{
+    subjectSchema.find()
+    .then(schema => {
+        console.log(schema);
+        callback();
+    })
 }
 
 const findStudents = (semester,callback) => {
@@ -123,34 +140,49 @@ const findStudents = (semester,callback) => {
         var result =[];
         for(i=0;i<schema.length;i++){
             result.push({
-                rollNo:schema.rollNo,
-                name:schema.name
+                rollNo:schema[i].rollNo,
+                name:schema[i].name
             })
         }
         callback(result);
     });
 }
 
+const deleteStudents = (semester,callback) =>{
+    studentSchema.deleteMany({semester:semester})
+    .then(schema => {
+        console.log(semester + " students deleted");
+        callback();
+    })
+}
+
 const addStudents = (semester,filename,callback) => {
     var arr;
-    var file = "G:/attendance/students/" + filename;
+    var file = "G:/attendance/students/" + filename + ".csv";
     fs.readFile(file,'utf-8', function (err, data) {
     if (err) {
-        throw err;
+        console.log(err);
     }
     arr = data.split('\n');
+    //console.log(arr);
     for(i=0;i<arr.length;i++){
         var a = arr[i].split(',');
-        var obj ={
-            semester:semester,
-            rollNo:a[0],
-            name:a[1]
+        if(a[0]==""){
+            continue;
         }
-        studentSchema.create(obj),then(obj =>{
-            console.log("students added ");
-            callback();
-        })
+        else{
+            a[1]=a[1].slice(0,a[1].length-1);
+            var obj ={
+                semester:semester,
+                rollNo:a[0],
+                name:a[1]
+            }
+        }
+        //console.log(obj);
+        studentSchema.create(obj)
     }
+    console.log("students added ");
+    callback();
 });
 }
 
@@ -162,6 +194,9 @@ module.exports ={
     listUser,
     addSubject,
     findSubject,
+    removeSubject,
+    listSubjects,
     findStudents,
+    deleteStudents,
     addStudents
 }

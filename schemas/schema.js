@@ -11,7 +11,7 @@ const subjectSchema = mongoose.Schema({
 
 const studentSchema = mongoose.Schema({
     semester: String,
-    rollNo: String,
+    rollNo: Number,
     name: String
 });
 
