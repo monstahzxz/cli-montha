@@ -147,7 +147,6 @@ function createsheet(dataa,callback) {
         JSON.stringify(response);
         const spreadsheetId=response.data.spreadsheetId;
         console.log(spreadsheetId);                           //remove
-        // sheetData(spreadsheetId,dataa);
         getData(spreadsheetId);
         sheetData(spreadsheetId,dataa);
         calculate(spreadsheetId);
@@ -1443,5 +1442,5 @@ sheets.spreadsheets.batchUpdate({
   }
 })
  }
-
- module.exports=createsheet;
+ module.exports = {sheetData,createsheet};
+//  module.exports= createsheet;

@@ -5,19 +5,23 @@ Attendance Management System
 Commands:
 
 To add an User
-  addUser|au           add a user                
-  findUser|fu          find a user
-  updateUser|uu        update a user
-  removeUser|ru        remove a user
-  listUser|lu          list all users
+  addUser              add a user                
+  findUser             find a user
+  updateUser           update a user
+  removeUser           remove a user
+  listUsers            list all users
 
 To add a subject
-  addSubject|as        add a subject
-  findSubject|fs       find a subject
-  updateSubject|us     update a subject
+  addSubject           add a subject
+  findSubject          find a subject
+  updateSubject        update a subject
+  removeSubject        remove a subject
+  listSubjects         list all the subjects
 
 To add students
   addStudents          add all the student details
+  findStudents         find the students of a semester
+  deleteStudents       deletes students of a semester
 
 Other  
   help                 display help for command

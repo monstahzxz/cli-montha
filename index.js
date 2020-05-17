@@ -77,17 +77,24 @@ const removeUser = (_id,callback) => {
 const listUser = (callback) => {
     userSchema.find()
     .then(schema => {
+        var res =[];
         for(i=0;i<schema.length;i++)
         {
-            console.log('\n userId: ' + schema[i]['_id']);
-            console.log('username: ' + schema[i]['name']);
-            console.log('email: ' + schema[i]['email']);
-            console.log('\n');
+            res.push({
+                _id:schema[i]._id,
+                name:schema[i].name,
+                email:schema[i].email,
+                phnNo: schema[i].phnNo
+            })
+            // console.log('\n userId: ' + schema[i]['_id']);
+            // console.log('username: ' + schema[i]['name']);
+            // console.log('email: ' + schema[i]['email']);
+            // console.log('\n');
         }
         //console.info(schema);
         console.info(`${schema.length} users matched`);
        // closeconnection();
-        callback();
+        callback(res);
     });
 }
 
@@ -156,6 +163,15 @@ const deleteStudents = (semester,callback) =>{
     })
 }
 
+const getsheetid = (_id,callback) =>{
+    var res;
+    subjectSchema.find({_id})
+    .then(schema => {
+        res =schema.googleSheetId;
+        callback(res);
+    })
+}
+
 const addStudents = (semester,filename,callback) => {
     var arr;
     var file = "G:/attendance/students/" + filename + ".csv";
@@ -198,5 +214,6 @@ module.exports ={
     listSubjects,
     findStudents,
     deleteStudents,
-    addStudents
+    addStudents,
+    getsheetid
 }
