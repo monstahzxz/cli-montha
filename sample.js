@@ -148,7 +148,7 @@ processString = function(str,callback){
                                     subjectCode:code,
                                     teacher: result[choice].name,
                                     subjectName:name,
-                                    students:result
+                                    student:result
                                 },function(spreadsheetId){
                                     sub = {
                                         subjectCode:code,

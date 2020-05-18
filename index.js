@@ -37,9 +37,9 @@ const findUser = (name,callback) => {
         var result =[];
         for(i=0;i<schema.length;i++){
             result.push({
-                name:schema.name,
-                email:schema.email,
-                phnNo: schema.phnNo
+                name:schema[i].name,
+                email:schema[i].email,
+                phnNo: schema[i].phnNo
             })
         }
        // console.info(schema);
