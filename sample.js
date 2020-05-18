@@ -24,7 +24,7 @@ const {
 } = require('./index.js');
 
 const {
-    sheetData,
+    updatedata,
     createsheet
 } = require('./oauth/index.js');
 
@@ -151,7 +151,7 @@ processString = function(str,callback){
                                             subjectCode:code,
                                             teacher: result[choice].name,
                                             subjectName:name,
-                                            student:results
+                                            students:results
                                         },(spreadsheetId) => {
                                             sub = {
                                                 subjectCode:code,
@@ -221,7 +221,7 @@ processString = function(str,callback){
                                         sheetid = getsheetid(_id,()=>{
                                             callback();
                                         });
-                                        sheetData(sheetid,{
+                                        updatedata(sheetid,{
                                             semester:semester,
                                             subjectName:name,
                                             subjectCode:code,

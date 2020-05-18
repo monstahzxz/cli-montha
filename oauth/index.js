@@ -84,7 +84,7 @@ function init(oauth)
   auth = oauth;
   // createsheet(dataa);
   // appendData("1SmXqlgESv6luhhsfyWDAinnUjoNwtyfifknrTxIntDI",attendance,attendance.noofhours);
-  updatedata("1SmXqlgESv6luhhsfyWDAinnUjoNwtyfifknrTxIntDI",update);
+ // updatedata("1SmXqlgESv6luhhsfyWDAinnUjoNwtyfifknrTxIntDI",update);
 }
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -1607,5 +1607,5 @@ sheets.spreadsheets.batchUpdate({
   }
 })
  }
- module.exports = {sheetData,createsheet};
+ module.exports = {updatedata,createsheet};
 //  module.exports= createsheet;
