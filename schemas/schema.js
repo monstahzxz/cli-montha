@@ -11,7 +11,7 @@ const subjectSchema = mongoose.Schema({
 
 const studentSchema = mongoose.Schema({
     semester: String,
-    rollNo: String,
+    rollNo: Number,
     name: String
 });
 
@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
     password : {type: String},
     email: {type: String},
     phnNo : {type: String},
-    salt: {type: String}
+    //salt: {type: String}
 });
 schemas.subjectSchema = mongoose.model('subject',subjectSchema);
 schemas.userSchema = mongoose.model('user',userSchema);
