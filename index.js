@@ -6,7 +6,6 @@ mongoose.Promise = global.Promise;
 //connection to db
 
 const fs = require('fs');
-var xlsx = require('xlsx');
 const db = mongoose.connect('mongodb://localhost:27017/Datastorage',
 {
     useUnifiedTopology: true,
@@ -124,6 +123,13 @@ const findSubject = (name,callback) => {
     });
 }
 
+const findSpreadSheetId = (subjectName, callback) => {
+    subjectSchema.find({subjectName: subjectName})
+    .then(schema => {
+        callback(schema[0].googleSheetId);
+    });
+};
+
 const removeSubject = (subject,callback) =>{
     const search = new RegExp(subject,'i');
     subjectSchema.deleteOne({subjectName:search})
@@ -151,6 +157,15 @@ const findStudents = (semester,callback) => {
                 name:schema[i].name
             })
         }
+
+        result.sort((a, b) => {
+            if (a['rollNo'] < b['rollNo']) {
+                return -1
+            } else {
+                return 1;
+            }
+            return 0;
+        });
         callback(result);
     });
 }
@@ -174,7 +189,7 @@ const getsheetid = (_id,callback) =>{
 
 const addStudents = (semester,filename,callback) => {
     var arr;
-    var file = "G:/attendance/students/" + filename + ".csv";
+    var file = "./students/" + filename + ".csv";
     fs.readFile(file,'utf-8', function (err, data) {
     if (err) {
         console.log(err);
@@ -215,5 +230,6 @@ module.exports ={
     findStudents,
     deleteStudents,
     addStudents,
-    getsheetid
+    getsheetid,
+    findSpreadSheetId
 }

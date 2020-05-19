@@ -59,7 +59,7 @@ var attendance ={
   noofhours:2,
   date:"16/9",
   day:"Mon",
- list:["P","A","P","P","A","P","P","A","P","A","P"]
+  list:["P","A","P","P","A","P","P","A","P","A","P"]
 };
  
 var update={
@@ -89,10 +89,10 @@ function init(oauth)
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = '../cli-montha/oauth/token.json';
 
 // Load client secrets from a local file.
-fs.readFile('./oauth/credentials.json', (err, content) => {
+fs.readFile('../cli-montha/oauth/credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Google Sheets API.
   authorize(JSON.parse(content), init);
@@ -162,7 +162,7 @@ function createsheet(dataa,callback) {
         console.log("Added");
         JSON.stringify(response);
         const spreadsheetId=response.data.spreadsheetId;
-        console.log(spreadsheetId);                           //remove
+        // console.log(spreadsheetId);                           //remove
         getData(spreadsheetId);
         sheetData(spreadsheetId,dataa);
         calculate(spreadsheetId);
@@ -683,7 +683,7 @@ function mergecells(spreadsheetId,dataa){
 {    // append static class details
   function sheetData(spreadsheetId,dataa) {
    var sheets = google.sheets('v4');
-   var values=[];  
+   var values=[];
    for(key of dataa.students)
    {
      values.push(
@@ -1607,5 +1607,5 @@ sheets.spreadsheets.batchUpdate({
   }
 })
  }
- module.exports = {updatedata,createsheet};
+ module.exports = {updatedata,createsheet,appendData};
 //  module.exports= createsheet;

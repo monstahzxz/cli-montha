@@ -175,7 +175,7 @@ processString = function(str,callback){
                                         subjectCode:code,
                                         teacher: result[choice].name,
                                         subjectName:name,
-                                        student:results
+                                        students:results
                                     },(spreadsheetId) => {
                                         sub = {
                                             subjectCode:code,
@@ -294,7 +294,7 @@ processString = function(str,callback){
 
     else if(str == 'help'){
         //console.log("sdhbvfhdsvfh");
-        fs.readFile('G:/attendance/help.txt','utf-8',function(err,data){
+        fs.readFile('./help.txt','utf-8',function(err,data){
             if (err){
                 console.log(err);
             }

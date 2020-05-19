@@ -16,7 +16,6 @@
     "inquirer": "^7.1.0",
     "line-reader": "^0.4.0",
     "mongoose": "^5.9.6",
-    "prompt": "^1.0.0",
-    "xlsx": "^0.16.0"
+    "prompt": "^1.0.0"
   }
 }
